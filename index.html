@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="./style/main.css">
     <title>Document</title>
 </head>
 <body>
     <div id="app">
         <div class="bg">
             <header class="header">
-                <img src="/assets/title.png" alt="" class="logo" @click="page = 'main'">
+                <img src="./assets/title.png" alt="" class="logo" @click="page = 'main'">
                 <button class="basket-btn" :class="{active: page === 'main'}" @click="page = 'basket'">
                     <div class="bascet-btn__price">{{sumBasketPrices()}}₽</div>
                     <div class="trait"></div>
                     <div class="bascet-btn__number">
-                        <img src="/assets/basket_white.png" alt="">
+                        <img src="./assets/basket_white.png" alt="">
                         <div class="bascet-btn__number__text">{{basket.products.length}}</div>
                     </div>
                 </button>
@@ -58,17 +58,17 @@
                     <h1>Корзина пустая😕</h1>
                     <div class="basketPage__empty__text">Вероятней всего, вы не заказывали ещё пиццу.
                         <br>Для того, чтобы заказать пиццу, перейди на главную страницу.</div>
-                    <img src="/assets/basketEmpty.png" alt="" class="basketPage__empty__img">
+                    <img src="./assets/basketEmpty.png" alt="" class="basketPage__empty__img">
                     <button class="basketPage__empty__btn" @click="page = 'main'">Вернуться назад</button>
                 </div>
                 <div class="basketPage__bascet" :class="{active: basket.products.length > 0}">
                     <div class="basketPage__bascet__header">
                         <div class="basketPage__bascet__header__title">
-                            <img src="/assets/basket_black.png" alt="">
+                            <img src="./assets/basket_black.png" alt="">
                             <div class="basketPage__bascet__header__title__text">Корзина</div>
                         </div>
                         <button class="basketPage__bascet__header__btnClear" @click="basketClear()">
-                            <img src="/assets/trash.png" alt="">
+                            <img src="./assets/trash.png" alt="">
                             <div class="basketPage__bascet__header__btnClear__text">Очистить корзину</div>
                         </button>
                     </div>
@@ -108,9 +108,9 @@
         </main>
         </div>
     </div>
-    <script src="js/vue.global.js"></script>
-    <script src="js/main.js" type="module"></script>
-    <script src="js/components/vProduct.js" type="module"></script>
-    <script src="js/components/vBasketProduct.js" type="module"></script>
+    <script src="./js/vue.global.js"></script>
+    <script src="./js/main.js" type="module"></script>
+    <script src="./js/components/vProduct.js" type="module"></script>
+    <script src="./js/components/vBasketProduct.js" type="module"></script>
 </body>
 </html>
