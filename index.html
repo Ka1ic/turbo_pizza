@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/main.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <div class="bg">
+            <header class="header">
+                <img src="/assets/title.png" alt="" class="logo" @click="page = 'main'">
+                <button class="basket-btn" :class="{active: page === 'main'}" @click="page = 'basket'">
+                    <div class="bascet-btn__price">{{sumBasketPrices()}}₽</div>
+                    <div class="trait"></div>
+                    <div class="bascet-btn__number">
+                        <img src="/assets/basket_white.png" alt="">
+                        <div class="bascet-btn__number__text">{{basket.products.length}}</div>
+                    </div>
+                </button>
+            </header>
+        <main class="main">
+            <div class="mainPage" :class="{active: page === 'main'}">
+                <div class="sort-menu">
+                    <div class="sort-menu__type">
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 0}" @click = "filter.categoryIndex = 0">Все</button>
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 1}" @click = "filter.categoryIndex = 1">Мясные</button>
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 2}" @click = "filter.categoryIndex = 2">Вегетарианская</button>
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 3}" @click = "filter.categoryIndex = 3">Гриль</button>
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 4}" @click = "filter.categoryIndex = 4">Острые</button>
+                        <button class="sort-menu__type__button" :class="{active: filter.categoryIndex === 5}" @click = "filter.categoryIndex = 5">Закрытые</button>
+                    </div>
+                    <div class="sort-menu__filter">
+                        <!-- {{showMenu()}} -->
+                        <button class="sort-menu__filter__button" @click="menuEnable();">
+                            <div class="sort-menu__filter__button__triangle" :class="{enable: filter.filterMenuEnabled}"></div>
+                            сортировка по: <div class="sort-menu__filter__button__orange">{{filter.sortTypes[filter.sortIndex]}}</div>
+                        </button>
+                        <div class="sort-menu__filter__menu" :class="{enable: filter.filterMenuEnabled}">
+                            <li>
+                                <ul><button class="sort-menu__filter__menu__item" :class="{active: filter.sortIndex === 0}" @click = "filter.sortIndex = 0; menuEnable(true);">по популярности</button></ul>
+                                <ul><button class="sort-menu__filter__menu__item" :class="{active: filter.sortIndex === 1}" @click = "filter.sortIndex = 1; menuEnable(true);">по цене</button></ul>
+                                <ul><button class="sort-menu__filter__menu__item" :class="{active: filter.sortIndex === 2}" @click = "filter.sortIndex = 2; menuEnable(true);">по алфавиту</button></ul>
+                            </li>
+                        </div> 
+                        <!-- <div class="sort-menu__filter__bg" :class="{enable: filter.filterMenuEnabled}" @click="menuEnable(true);"></div> -->
+                    </div>
+                </div>
+                <h1 class="caption">{{categoryes[filter.categoryIndex].name}} пиццы</h1>
+                <div class="content">
+                    <v-product v-for="(i, index) in sort(filter.sortIndex, products)" :src="products[index].src" :name="products[index].name" :price="products[index].price" :type="products[index].type" :sort="filter.categoryIndex" :popular="products[index].popular" :fun="addToBasket" :inbasket="countInBasket(products[index].type)"></v-product>
+                </div>
+            </div>
+            <div class="basketPage" :class="{active: page === 'basket'}">
+                <div class="basketPage__empty" :class="{active: basket.products.length === 0}">
+                    <h1>Корзина пустая😕</h1>
+                    <div class="basketPage__empty__text">Вероятней всего, вы не заказывали ещё пиццу.
+                        <br>Для того, чтобы заказать пиццу, перейди на главную страницу.</div>
+                    <img src="/assets/basketEmpty.png" alt="" class="basketPage__empty__img">
+                    <button class="basketPage__empty__btn" @click="page = 'main'">Вернуться назад</button>
+                </div>
+                <div class="basketPage__bascet" :class="{active: basket.products.length > 0}">
+                    <div class="basketPage__bascet__header">
+                        <div class="basketPage__bascet__header__title">
+                            <img src="/assets/basket_black.png" alt="">
+                            <div class="basketPage__bascet__header__title__text">Корзина</div>
+                        </div>
+                        <button class="basketPage__bascet__header__btnClear" @click="basketClear()">
+                            <img src="/assets/trash.png" alt="">
+                            <div class="basketPage__bascet__header__btnClear__text">Очистить корзину</div>
+                        </button>
+                    </div>
+                    <div class="basketPage__bascet__content">
+                        <!-- <div class="basketItem">
+                            <div class="basketItem__info">
+                                <img v-bind:src="basket.products[0].src" alt="" class="basketItem__info__img">
+                                <div class="basketItem__info__information">
+                                    <div class="basketItem__info__information__name">{{basket.products[0].name}}</div>
+                                    <div class="basketItem__info__information__size">{{basket.products[0].dought}}, {{basket.products[0].size}}</div>
+                                </div>
+                            </div>
+                            <div class="basketItem__interactive">
+                                <div class="basketItem__interactive__count">
+                                    <button class="basketItem__interactive__count__btnSubtract basketItem__interactive__count__btn" @click="basket.products[0].count--"><div></div></button>
+                                    <div class="basketItem__interactive__count__text">{{basket.products[0].count}}</div>
+                                    <button class="basketItem__interactive__count__btnAdd basketItem__interactive__count__btn" @click="basket.products[0].count++"><div></div><div></div></button>
+                                </div>
+                                <div class="basketItem__interactive__price">{{basket.products[0].price * basket.products[0].count}}₽</div>
+                                <button class="basketItem__interactive__btnDelete" @click="removeBasketItem(0)"><div></div><div></div></button>
+                            </div>
+                        </div> -->
+                        <v-basket-product v-for="(i, index) in basket.products" :src="basket.products[index].src" :name="basket.products[index].name" :price="basket.products[index].price" :size="basket.products[index].size" :dought="basket.products[index].dought" :index="index" :fun="countBasketItemChange" :count="basket.products[index].count" :removefun="removeBasketItem" :type="basket.products[index].type"></v-basket-product>
+                    </div>
+                    <div class="basketPage__bascet__footer">
+                        <div class="basketPage__bascet__footer__info">
+                            <div class="basketPage__bascet__footer__info__count">Всего пицц:<div class="basketPage__bascet__footer__info__count__text"> {{basketCount()}} шт.</div></div>
+                            <div class="basketPage__bascet__footer__info__price">Сумма заказа:<div class="basketPage__bascet__footer__info__price__text">{{sumBasketPrices()}}₽</div></div>
+                        </div>
+                        <div class="basketPage__bascet__footer__buttons">
+                            <button class="basketPage__bascet__footer__buttons__returnBack" @click="page = 'main'">&lt; Вернуться назад</button>
+                            <button class="basketPage__bascet__footer__buttons__pay">Оплатить сейчас</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+    <script src="js/vue.global.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/components/vProduct.js" type="module"></script>
+    <script src="js/components/vBasketProduct.js" type="module"></script>
+</body>
+</html>
